@@ -1,0 +1,12 @@
+flask
+flask-cors
+spacy
+scikit-learn
+sentence-transformers
+transformers
+torch
+numpy
+pdfplumber
+groq
+python-dotenv
+requests

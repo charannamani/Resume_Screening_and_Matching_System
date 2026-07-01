@@ -1,0 +1,31 @@
+# Python
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Secrets
+.env
+
+# Database
+*.db
+matches.db
+
+# React
+node_modules/
+dist/
+
+# Temporary uploads
+temp_uploads/
+
+# IDE
+.vscode/
+
+# Model cache
+models/
+.cache/
+
+# OS
+.DS_Store
+Thumbs.db
