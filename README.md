@@ -69,25 +69,6 @@ ScreenGrid scores candidate applications through a three-tier hybrid evaluation 
 
 ---
 
-## 📂 Repository Structure
-
-```
-ScreenGrid/
-├── backend/
-│   ├── main.py             # FastAPI REST endpoints & upload handlers
-│   ├── parser.py           # Multi-format document text extractor (PDF, DOCX)
-│   ├── extractor.py        # spaCy skill and entity extraction logic
-│   ├── ranker.py           # SBERT vector similarity & scoring mathematical engine
-│   └── llm_evaluator.py    # Groq concurrent batch inference orchestrator
-├── frontend/
-│   ├── src/                # React / Vite candidate evaluation interface
-│   ├── index.html          # Dashboard entry point
-│   └── package.json        # Frontend dependency for API keys
-├── .gitignore              # Git tracking ignore rules
-├── README.md               # System documentation
-└── requirements.txt        # Backend Python dependency manifest
-```
-
 ---
 
 ## 🛠 Tech Stack
