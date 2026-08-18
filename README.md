@@ -69,8 +69,6 @@ ScreenGrid scores candidate applications through a three-tier hybrid evaluation 
 
 ---
 
----
-
 ## 🛠 Tech Stack
 
 | Category            | Tools                                                              |
