@@ -84,8 +84,7 @@ ScreenGrid/
 │   ├── index.html          # Dashboard entry point
 │   └── package.json        # Frontend dependency manifest
 ├── samples/
-│   ├── resumes/            # Benchmark candidate resume samples
-│   └── job_descriptions/  # Sample technical role descriptions
+│   ├── resumes/            # Benchmark candidate descriptions
 ├── .env.example            # Environment template for API keys
 ├── .gitignore              # Git tracking ignore rules
 ├── README.md               # System documentation
