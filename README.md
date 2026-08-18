@@ -73,20 +73,30 @@ ScreenGrid scores candidate applications through a three-tier hybrid evaluation 
 
 ```
 ScreenGrid/
-├── src/
-│   ├── main.py             # FastAPI REST endpoints & upload handlers
-│   ├── parser.py           # Multi-format document text extractor (PDF, DOCX)
-│   ├── extractor.py        # spaCy skill and entity extraction logic
-│   ├── ranker.py           # SBERT vector similarity & scoring mathematical engine
-│   └── llm_evaluator.py    # Groq concurrent batch inference orchestrator
+├── .vscode/                 # Editor workspace settings
 ├── client/
-│   ├── src/                # React / Vite candidate evaluation interface
-│   ├── index.html          # Dashboard entry point
-│   └── package.json        # Frontend dependency   # Sample technical role descriptions
+│   ├── node_modules/
+│   ├── public/
+│   ├── src/                 # React / Vite candidate evaluation interface
+│   ├── eslint.config.js
+│   ├── index.html           # Dashboard entry point
+│   ├── package.json         # Frontend dependency manifest
+│   ├── package-lock.json
+│   └── vite.config.js
 ├── screenshots/
 │   └── dashboard.png        # UI screenshot referenced in README
-├── .env.example             # Environment template for API keys
+├── src/
+│   ├── app.py                # FastAPI REST endpoints & upload handlers
+│   ├── extractor.py          # spaCy skill and entity extraction logic
+│   ├── llm_analyzer.py       # Groq concurrent batch inference orchestrator
+│   ├── matcher.py            # SBERT vector similarity & scoring engine
+│   ├── parser.py             # Multi-format document text extractor (PDF, DOCX)
+│   └── preprocessor.py       # Text cleaning & normalization utilities
+├── temp_uploads/             # Transient storage for uploaded resumes
+├── venv/                     # Python virtual environment (not tracked)
+├── .env                      # Environment variables (not tracked)
 ├── .gitignore                # Git tracking ignore rules
+├── matches.db                # SQLite database of scored candidate matches
 ├── README.md                 # System documentation
 └── requirements.txt          # Backend Python dependency manifest
 ```
@@ -136,11 +146,7 @@ python -m spacy download en_core_web_sm
 
 ### 3. Configure Environment Variables
 
-```bash
-cp .env.example .env
-```
-
-Add your credentials inside `.env`:
+Create a `.env` file in the root directory and add your credentials:
 
 ```
 GROQ_API_KEY=your_groq_api_key_here
@@ -151,7 +157,15 @@ PORT=8000
 
 ```bash
 # Start FastAPI backend server
-uvicorn backend.main:app --reload --port 8000
+uvicorn src.app:app --reload --port 8000
 ```
 
 Navigate to `http://localhost:8000/docs` to interact with the Swagger API testing suite.
+
+### 5. Run the Frontend
+
+```bash
+cd client
+npm install
+npm run dev
+```
