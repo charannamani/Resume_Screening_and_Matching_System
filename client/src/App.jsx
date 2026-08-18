@@ -1,5 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
+import "./App.css";
 
 const API_URL = "http://127.0.0.1:5000/match";
 
@@ -17,7 +18,7 @@ export default function App() {
 
   const handleMatch = async () => {
     if (!jd.trim() || files.length === 0) {
-      setError("Add a job description and at least one resume PDF before running the engine.");
+      setError("Please add a job description and at least one PDF resume.");
       return;
     }
 
@@ -33,79 +34,84 @@ export default function App() {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
-      const sorted = [...(response.data.results || [])].sort(
-        (a, b) => b.combined_score - a.combined_score
-      );
-      setResults(sorted);
+      setResults(response.data.results || []);
     } catch (err) {
       console.error(err);
       setResults(null);
-      setError("Couldn't reach the matching engine. Confirm the backend is running on port 5000.");
+      setError("Failed to connect to the backend engine on http://127.0.0.1:5000.");
     } finally {
       setLoading(false);
     }
   };
 
   const scoreColor = (score) => {
-    if (score >= 75) return "#3ddc84";
-    if (score >= 50) return "#ffc857";
-    return "#ff6b6b";
+    if (score >= 75) return "#34d399";
+    if (score >= 50) return "#fbbf24";
+    return "#f87171";
+  };
+
+  const depthBadgeColor = (depth) => {
+    const d = (depth || "").toLowerCase();
+    if (d === "high") return { bg: "#064e3b", text: "#6ee7b7", border: "#047857" };
+    if (d === "medium") return { bg: "#451a03", text: "#fcd34d", border: "#b45309" };
+    return { bg: "#450a0a", text: "#fca5a5", border: "#b91c1c" };
   };
 
   return (
     <div className="app">
       <style>{`
-        * { box-sizing: border-box; }
-        body { margin: 0; }
         .app {
           min-height: 100vh;
-          background: radial-gradient(circle at top, #12161c 0%, #0a0c10 60%);
-          color: #e6e9ef;
-          font-family: 'Segoe UI', system-ui, sans-serif;
+          background: radial-gradient(circle at top, #141b26 0%, #080c14 70%);
+          color: #e2e8f0;
           padding: 40px 20px 80px;
         }
-        .shell { max-width: 880px; margin: 0 auto; }
+        .shell { max-width: 960px; margin: 0 auto; }
         .header { text-align: center; margin-bottom: 36px; }
         .eyebrow {
-          font-size: 12px;
+          font-size: 11px;
           letter-spacing: 3px;
           text-transform: uppercase;
-          color: #57c7ff;
-          font-weight: 600;
+          color: #38bdf8;
+          font-weight: 700;
         }
         .title {
-          font-size: 32px;
-          font-weight: 700;
+          font-size: 34px;
+          font-weight: 800;
           margin: 6px 0 0;
-          letter-spacing: 0.5px;
+          letter-spacing: -0.5px;
+          color: #f8fafc;
         }
         .panel {
-          background: #12161d;
-          border: 1px solid #232935;
-          border-radius: 12px;
+          background: #111827;
+          border: 1px solid #1f293d;
+          border-radius: 14px;
           padding: 24px;
-          margin-bottom: 24px;
+          margin-bottom: 28px;
+          box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
         }
         .label {
-          font-size: 12px;
+          font-size: 11px;
           text-transform: uppercase;
           letter-spacing: 1.5px;
-          color: #8b93a3;
-          margin-bottom: 10px;
+          color: #94a3b8;
+          margin-bottom: 8px;
           display: block;
+          font-weight: 600;
         }
         textarea {
           width: 100%;
-          min-height: 120px;
-          background: #0d1015;
-          border: 1px solid #2a3140;
-          border-radius: 8px;
+          min-height: 130px;
+          background: #090d16;
+          border: 1px solid #283548;
+          border-radius: 10px;
           padding: 14px;
-          color: #e6e9ef;
+          color: #f1f5f9;
           font-size: 14px;
           resize: vertical;
+          font-family: inherit;
         }
-        textarea:focus, input:focus { outline: 2px solid #57c7ff; outline-offset: 2px; }
+        textarea:focus, input:focus { outline: 2px solid #38bdf8; outline-offset: 1px; }
         .file-row {
           display: flex;
           align-items: center;
@@ -113,35 +119,35 @@ export default function App() {
           margin-top: 6px;
         }
         input[type="file"] {
-          color: #8b93a3;
+          color: #94a3b8;
           font-size: 13px;
         }
         .file-count {
           font-size: 12px;
-          color: #57c7ff;
+          color: #38bdf8;
+          font-weight: 600;
         }
         .run-btn {
           width: 100%;
           margin-top: 20px;
           padding: 14px;
-          border-radius: 8px;
+          border-radius: 10px;
           border: none;
-          background: linear-gradient(135deg, #57c7ff, #3d8bff);
-          color: #05070a;
+          background: linear-gradient(135deg, #38bdf8, #2563eb);
+          color: #ffffff;
           font-weight: 700;
-          font-size: 14px;
-          letter-spacing: 0.5px;
+          font-size: 15px;
           cursor: pointer;
-          transition: opacity 0.15s ease;
+          transition: all 0.2s ease;
         }
         .run-btn:disabled { opacity: 0.6; cursor: not-allowed; }
-        .run-btn:not(:disabled):hover { opacity: 0.9; }
+        .run-btn:not(:disabled):hover { opacity: 0.92; transform: translateY(-1px); }
         .error-banner {
-          background: #2a1418;
-          border: 1px solid #5c2530;
-          color: #ff9aa6;
+          background: #3b1219;
+          border: 1px solid #7f1d1d;
+          color: #fca5a5;
           padding: 12px 16px;
-          border-radius: 8px;
+          border-radius: 10px;
           font-size: 13px;
           margin-bottom: 20px;
         }
@@ -151,22 +157,22 @@ export default function App() {
           align-items: baseline;
           margin-bottom: 16px;
         }
-        .results-header h2 { font-size: 18px; margin: 0; }
-        .results-count { font-size: 12px; color: #8b93a3; }
+        .results-header h2 { font-size: 20px; margin: 0; font-weight: 700; }
         .empty-state {
           text-align: center;
-          padding: 40px 20px;
-          color: #56606f;
-          font-size: 13px;
-          border: 1px dashed #232935;
-          border-radius: 12px;
+          padding: 48px 20px;
+          color: #64748b;
+          font-size: 14px;
+          border: 1px dashed #1e293b;
+          border-radius: 14px;
         }
         .card {
-          background: #12161d;
-          border: 1px solid #232935;
-          border-radius: 12px;
-          padding: 20px;
-          margin-bottom: 16px;
+          background: #111827;
+          border: 1px solid #1f293d;
+          border-radius: 14px;
+          padding: 22px;
+          margin-bottom: 20px;
+          box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
         }
         .card-top {
           display: flex;
@@ -174,157 +180,258 @@ export default function App() {
           align-items: center;
           margin-bottom: 14px;
         }
-        .candidate-id { font-size: 15px; font-weight: 700; margin: 0; }
-        .combined-badge {
-          font-size: 20px;
-          font-weight: 800;
-          color: #05070a;
-          background: none;
-        }
-        .scores {
+        .candidate-id { font-size: 17px; font-weight: 700; color: #f8fafc; margin: 0; }
+        .combined-score-box { text-align: right; }
+        .combined-val { font-size: 24px; font-weight: 800; }
+        .combined-tag { font-size: 10px; text-transform: uppercase; color: #94a3b8; letter-spacing: 1px; display: block; }
+        
+        .scores-grid {
           display: grid;
           grid-template-columns: 1fr 1fr;
-          gap: 12px;
-          margin-bottom: 16px;
+          gap: 16px;
+          margin-bottom: 18px;
+          background: #090d16;
+          padding: 14px;
+          border-radius: 10px;
         }
-        .score-block { }
         .score-label {
           font-size: 11px;
           text-transform: uppercase;
           letter-spacing: 1px;
-          color: #8b93a3;
+          color: #94a3b8;
           margin-bottom: 6px;
+          display: flex;
+          justify-content: space-between;
         }
         .score-bar-track {
           height: 6px;
-          background: #1c212b;
+          background: #1e293b;
           border-radius: 4px;
           overflow: hidden;
         }
         .score-bar-fill {
           height: 100%;
           border-radius: 4px;
-          transition: width 0.4s ease;
+          transition: width 0.5s ease;
         }
-        .score-value {
+
+        .llm-section {
+          background: #0f172a;
+          border: 1px solid #1e293b;
+          border-radius: 10px;
+          padding: 14px;
+          margin-bottom: 16px;
+        }
+        .llm-header {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          margin-bottom: 8px;
+        }
+        .llm-title {
+          font-size: 11px;
+          text-transform: uppercase;
+          letter-spacing: 1.5px;
+          color: #38bdf8;
+          font-weight: 700;
+        }
+        .depth-badge {
+          font-size: 11px;
+          font-weight: 700;
+          text-transform: uppercase;
+          padding: 3px 10px;
+          border-radius: 999px;
+          border: 1px solid transparent;
+        }
+        .llm-text {
           font-size: 13px;
-          font-weight: 600;
-          margin-top: 4px;
+          line-height: 1.5;
+          color: #cbd5e1;
+          margin: 4px 0;
         }
-        .gap-section { border-top: 1px solid #1c212b; padding-top: 14px; }
-        .gap-label {
+        .exp-tag {
+          font-size: 12px;
+          color: #94a3b8;
+          margin-top: 6px;
+        }
+
+        .skills-container {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 12px;
+          margin-top: 12px;
+        }
+        .skill-group-label {
           font-size: 11px;
           text-transform: uppercase;
           letter-spacing: 1px;
-          color: #8b93a3;
-          margin-bottom: 8px;
+          color: #94a3b8;
+          margin-bottom: 6px;
           display: block;
         }
-        .perfect-match {
-          color: #3ddc84;
-          font-size: 13px;
-          font-weight: 600;
-        }
-        .skill-chip {
+        .chip {
           display: inline-block;
-          background: #2a2013;
-          border: 1px solid #5c4720;
-          color: #ffc857;
-          padding: 4px 12px;
-          margin: 3px 6px 3px 0;
-          border-radius: 999px;
+          padding: 3px 10px;
+          margin: 3px 4px 3px 0;
+          border-radius: 6px;
           font-size: 12px;
+          font-weight: 500;
+        }
+        .chip-matched {
+          background: #064e3b;
+          border: 1px solid #047857;
+          color: #6ee7b7;
+        }
+        .chip-missing {
+          background: #451a03;
+          border: 1px solid #b45309;
+          color: #fcd34d;
+        }
+        .none-text {
+          font-size: 12px;
+          color: #64748b;
+          font-style: italic;
         }
       `}</style>
 
       <div className="shell">
         <div className="header">
-          <div className="eyebrow">Resume &rarr; JD Matching Engine</div>
-          <h1 className="title">Console</h1>
+          <div className="eyebrow">Production AI Engine</div>
+          <h1 className="title">Resume Screening & Matcher</h1>
         </div>
 
         <div className="panel">
-          <span className="label">Job Description</span>
+          <span className="label">Target Job Description</span>
           <textarea
             value={jd}
             onChange={(e) => setJd(e.target.value)}
-            placeholder="Paste the job description here..."
+            placeholder="Paste complete job description requirements here..."
           />
 
           <div style={{ marginTop: "18px" }}>
-            <span className="label">Resumes (PDF)</span>
+            <span className="label">Candidate Resumes (PDF)</span>
             <div className="file-row">
               <input type="file" multiple accept=".pdf" onChange={handleFileChange} />
               {files.length > 0 && (
-                <span className="file-count">{files.length} file{files.length > 1 ? "s" : ""} selected</span>
+                <span className="file-count">{files.length} resume{files.length > 1 ? "s" : ""} selected</span>
               )}
             </div>
           </div>
 
           <button className="run-btn" onClick={handleMatch} disabled={loading}>
-            {loading ? "Analyzing..." : "Run ML Engine"}
+            {loading ? "Screening & Scoring Candidates..." : "Run AI Matching Pipeline"}
           </button>
         </div>
 
         {error && <div className="error-banner">{error}</div>}
 
         <div className="results-header">
-          <h2>Results</h2>
-          {results && <span className="results-count">{results.length} candidate{results.length !== 1 ? "s" : ""}</span>}
+          <h2>Evaluation Leaderboard</h2>
+          {results && <span style={{ color: "#94a3b8", fontSize: "13px" }}>{results.length} evaluated</span>}
         </div>
 
         {!results && !loading && (
-          <div className="empty-state">Run the engine to see candidate scores  here.</div>
+          <div className="empty-state">Upload resumes and run the engine to view candidate rankings.</div>
         )}
 
         {results &&
-          results.map((r, idx) => (
-            <div className="card" key={r.candidate_id ?? idx}>
-              <div className="card-top">
-                <h4 className="candidate-id">{r.candidate_id}</h4>
-                <span className="combined-badge" style={{ color: scoreColor(r.combined_score) }}>
-                  {r.combined_score}%
-                </span>
-              </div>
-
-              <div className="scores">
-                <div className="score-block">
-                  <div className="score-label">SBERT (Semantic)</div>
-                  <div className="score-bar-track">
-                    <div
-                      className="score-bar-fill"
-                      style={{ width: `${r.sbert_score}%`, background: scoreColor(r.sbert_score) }}
-                    />
-                  </div>
-                  <div className="score-value">{r.sbert_score}%</div>
-                </div>
-
-                <div className="score-block">
-                  <div className="score-label">TF-IDF (Lexical)</div>
-                  <div className="score-bar-track">
-                    <div
-                      className="score-bar-fill"
-                      style={{ width: `${r.tfidf_score}%`, background: scoreColor(r.tfidf_score) }}
-                    />
-                  </div>
-                  <div className="score-value">{r.tfidf_score}%</div>
-                </div>
-              </div>
-
-              <div className="gap-section">
-                <span className="gap-label">Skill Gap</span>
-                {(!r.missing_skills || r.missing_skills.length === 0) ? (
-                  <span className="perfect-match">Perfect match — no missing skills ✅</span>
-                ) : (
+          results.map((r, idx) => {
+            const depthStyle = depthBadgeColor(r.llm_insight?.project_depth);
+            return (
+              <div className="card" key={r.candidate_id ?? idx}>
+                <div className="card-top">
                   <div>
-                    {r.missing_skills.map((skill) => (
-                      <span className="skill-chip" key={skill}>{skill}</span>
-                    ))}
+                    <h4 className="candidate-id">#{idx + 1} &nbsp; {r.candidate_id}</h4>
+                    <span className="exp-tag">
+                      Est. Experience: {r.llm_insight?.experience_years_estimate ? `${r.llm_insight.experience_years_estimate} yrs` : "Fresher / Not specified"}
+                    </span>
+                  </div>
+                  <div className="combined-score-box">
+                    <span className="combined-val" style={{ color: scoreColor(r.combined_score) }}>
+                      {r.combined_score}%
+                    </span>
+                    <span className="combined-tag">Overall Fit</span>
+                  </div>
+                </div>
+
+                <div className="scores-grid">
+                  <div>
+                    <div className="score-label">
+                      <span>SBERT Semantic Match</span>
+                      <strong style={{ color: scoreColor(r.sbert_score) }}>{r.sbert_score}%</strong>
+                    </div>
+                    <div className="score-bar-track">
+                      <div
+                        className="score-bar-fill"
+                        style={{ width: `${r.sbert_score}%`, background: scoreColor(r.sbert_score) }}
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <div className="score-label">
+                      <span>TF-IDF Lexical Match</span>
+                      <strong style={{ color: scoreColor(r.tfidf_score) }}>{r.tfidf_score}%</strong>
+                    </div>
+                    <div className="score-bar-track">
+                      <div
+                        className="score-bar-fill"
+                        style={{ width: `${r.tfidf_score}%`, background: scoreColor(r.tfidf_score) }}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {r.llm_insight && (
+                  <div className="llm-section">
+                    <div className="llm-header">
+                      <span className="llm-title">LLM Qualitative Analysis (Groq Llama 3.3)</span>
+                      <span
+                        className="depth-badge"
+                        style={{
+                          background: depthStyle.bg,
+                          color: depthStyle.text,
+                          borderColor: depthStyle.border,
+                        }}
+                      >
+                        Project Depth: {r.llm_insight.project_depth || "Medium"}
+                      </span>
+                    </div>
+                    <p className="llm-text">
+                      <strong>Alignment:</strong> {r.llm_insight.jd_alignment_summary}
+                    </p>
+                    <p className="llm-text">
+                      <strong>Reasoning:</strong> {r.llm_insight.depth_reasoning}
+                    </p>
                   </div>
                 )}
+
+                <div className="skills-container">
+                  <div>
+                    <span className="skill-group-label">Matched Skills ({r.matched_skills?.length || 0})</span>
+                    {r.matched_skills && r.matched_skills.length > 0 ? (
+                      r.matched_skills.map((s) => (
+                        <span className="chip chip-matched" key={s}>✓ {s}</span>
+                      ))
+                    ) : (
+                      <span className="none-text">No direct keyword overlap</span>
+                    )}
+                  </div>
+
+                  <div>
+                    <span className="skill-group-label">Missing Skills ({r.missing_skills?.length || 0})</span>
+                    {r.missing_skills && r.missing_skills.length > 0 ? (
+                      r.missing_skills.map((s) => (
+                        <span className="chip chip-missing" key={s}>✗ {s}</span>
+                      ))
+                    ) : (
+                      <span className="none-text" style={{ color: "#34d399" }}>All required skills matched!</span>
+                    )}
+                  </div>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
       </div>
     </div>
   );

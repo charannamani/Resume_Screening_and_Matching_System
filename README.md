@@ -1,94 +1,160 @@
-# AI Powered Resume Screening and Candidate Ranking System
+# ScreenGrid: High-Throughput AI Resume Screening & Semantic Ranking Engine
 
-An intelligent resume screening system that analyzes candidate resumes against job descriptions using NLP, semantic similarity models, and LLM-based reasoning.
+ScreenGrid is an automated candidate evaluation and ranking system designed to parse, match, and evaluate resumes against target Job Descriptions (JDs) with low latency. It combines semantic vector embeddings, entity-based skill extraction, and asynchronous LLM orchestration to generate calibrated multi-dimensional candidate fit scores.
 
-## Features
+---
 
-- Upload multiple PDF resumes
-- Extract text from PDF documents
-- NLP preprocessing using spaCy
-- TF-IDF similarity scoring
-- SBERT semantic similarity matching
-- Skill gap detection
-- LLM-based candidate reasoning using Groq API
-- Candidate ranking based on combined score
-- React frontend + Flask backend integration
+## 📸 Screenshot
 
-## Tech Stack
+![ScreenGrid Dashboard](./screenshots/dashboard.png)
 
-Frontend:
+---
 
-- React.js
-- Axios
+## 🔬 System Architecture
 
-Backend:
+```
+               [ Bulk Candidate Resumes (PDF / DOCX) ] & [ Target Job Description ]
+                                                  │
+                                                  ▼
+                                   ┌──────────────────────────────┐
+                                   │  Document Parsing Pipeline   │
+                                   │  - PyPDF / python-docx       │
+                                   │  - Text Normalization        │
+                                   └──────────────┬───────────────┘
+                                                  │
+                         ┌────────────────────────┴────────────────────────┐
+                         ▼                                                 ▼
+          ┌──────────────────────────────┐                  ┌──────────────────────────────┐
+          │   Dense Semantic Encoding    │                  │  Named Entity & Skill Parser │
+          │  - SBERT (MiniLM-L6-v2)      │                  │  - spaCy Entity Extraction   │
+          │  - Contextual Embeddings     │                  │  - Technical Taxonomy Match  │
+          └──────────────┬───────────────┘                  └──────────────┬───────────────┘
+                         │                                                 │
+                         └────────────────────────┬────────────────────────┘
+                                                  │
+                                                  ▼
+                                   ┌──────────────────────────────┐
+                                   │   Cosine Similarity Matrix   │
+                                   │   - Vector Distance Scoring  │
+                                   │   - Hard Skill Overlap Ratio │
+                                   └──────────────┬───────────────┘
+                                                  │ Top-K Filtered Candidates
+                                                  ▼
+                                   ┌──────────────────────────────┐
+                                   │ Asynchronous LLM Evaluator   │
+                                   │ - Groq (Llama-3 / Mixtral)   │
+                                   │ - Concurrent Thread Pool     │
+                                   │ - Multi-Criteria Rubric      │
+                                   └──────────────┬───────────────┘
+                                                  │
+                                                  ▼
+                                   [ Ranked Candidate Leaderboard ]
+                                   - Overall Fit Score (0 - 100%)
+                                   - Semantic Alignment Metric
+                                   - Strengths, Weaknesses & Red Flags
+                                   - Role-Fit Justification
+```
 
-- Flask
-- Flask-CORS
-- SQLite
+---
 
-Machine Learning / NLP:
+## 🧠 Core Evaluation Rubric
 
-- spaCy
-- TF-IDF Vectorization
-- Sentence Transformers (all-MiniLM-L6-v2)
-- Cosine Similarity
+ScreenGrid scores candidate applications through a three-tier hybrid evaluation pipeline:
 
-LLM Layer:
+| Tier                                  | Evaluation Method                          | Weight | Purpose                                                                             |
+| ------------------------------------- | ------------------------------------------ | ------ | ----------------------------------------------------------------------------------- |
+| **Tier 1: Semantic Embeddings**       | Sentence-Transformers (`all-MiniLM-L6-v2`) | 40%    | Measures deep semantic alignment between candidate experience and role domain.      |
+| **Tier 2: Entity & Skill Overlap**    | Custom spaCy Entity Matcher & Set Overlap  | 30%    | Enforces mandatory hard skill, tool, and framework requirements.                    |
+| **Tier 3: Structured LLM Assessment** | Fast Groq Inference Pipeline               | 30%    | Analyzes years of experience, leadership scope, and project relevance without bias. |
 
-- Groq API (Llama 3.3 70B)
+---
 
-Document Processing:
+## 📂 Repository Structure
 
-- pdfplumber
+```
+ScreenGrid/
+├── backend/
+│   ├── main.py             # FastAPI REST endpoints & upload handlers
+│   ├── parser.py           # Multi-format document text extractor (PDF, DOCX)
+│   ├── extractor.py        # spaCy skill and entity extraction logic
+│   ├── ranker.py           # SBERT vector similarity & scoring mathematical engine
+│   └── llm_evaluator.py    # Groq concurrent batch inference orchestrator
+├── frontend/
+│   ├── src/                # React / Vite candidate evaluation interface
+│   ├── index.html          # Dashboard entry point
+│   └── package.json        # Frontend dependency manifest
+├── samples/
+│   ├── resumes/             # Benchmark candidate resume samples
+│   └── job_descriptions/    # Sample technical role descriptions
+├── screenshots/
+│   └── dashboard.png        # UI screenshot referenced in README
+├── .env.example             # Environment template for API keys
+├── .gitignore                # Git tracking ignore rules
+├── README.md                 # System documentation
+└── requirements.txt          # Backend Python dependency manifest
+```
 
-## System Workflow
+---
 
-PDF Resume Upload
-→ Text Extraction
-→ NLP Cleaning
-→ Skill Extraction
-→ TF-IDF Matching
-→ SBERT Semantic Analysis
-→ LLM Candidate Evaluation
-→ Skill Gap Detection
-→ Final Candidate Ranking
+## 🛠 Tech Stack
 
-## Sample Output
+| Category            | Tools                                                              |
+| ------------------- | ------------------------------------------------------------------ |
+| API & Serving       | Python, FastAPI, Uvicorn, Pydantic                                 |
+| NLP & Embeddings    | spaCy, Hugging Face `sentence-transformers`, PyTorch, Scikit-Learn |
+| LLM Engine          | Groq SDK (Llama 3 / Mixtral inference acceleration)                |
+| Document Processing | PyPDF, python-docx                                                 |
+| Frontend            | React.js, Tailwind CSS                                             |
 
-Candidate 1
+---
 
-- TF-IDF Score: 81%
-- SBERT Score: 88%
-- Combined Score: 85%
-- Missing Skills: Docker, AWS
+## 🚀 Local Setup & Reproduction
 
-Candidate 2
+### Prerequisites
 
-- TF-IDF Score: 62%
-- SBERT Score: 70%
-- Combined Score: 66%
+- Python 3.10+
+- Node.js 18+ (for frontend dashboard)
+- Groq Cloud API Key
 
-## Future Improvements
+### 1. Clone Repository
 
-- BERT fine-tuned ranking model
-- Support DOCX resumes
-- Recruiter dashboard
-- Batch candidate analytics
+```bash
+git clone https://github.com/charannamani/ScreenGrid.git
+cd ScreenGrid
+```
 
-## Run Locally
+### 2. Backend Environment Setup
 
-Backend
+```bash
+# Create and activate virtual environment
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
 
+# Install dependencies
 pip install -r requirements.txt
-python src/app.py
 
-Frontend
+# Download spaCy NLP model
+python -m spacy download en_core_web_sm
+```
 
-cd client
-npm install
-npm run dev
+### 3. Configure Environment Variables
 
-## Demo
+```bash
+cp .env.example .env
+```
 
-![Demo](screenshots/results1.png)
+Add your credentials inside `.env`:
+
+```
+GROQ_API_KEY=your_groq_api_key_here
+PORT=8000
+```
+
+### 4. Run the Engine
+
+```bash
+# Start FastAPI backend server
+uvicorn backend.main:app --reload --port 8000
+```
+
+Navigate to `http://localhost:8000/docs` to interact with the Swagger API testing suite.
