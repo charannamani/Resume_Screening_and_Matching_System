@@ -71,35 +71,24 @@ ScreenGrid scores candidate applications through a three-tier hybrid evaluation 
 
 ## 📂 Repository Structure
 
-```
 ScreenGrid/
-├── .vscode/                 # Editor workspace settings
-├── client/
-│   ├── node_modules/
-│   ├── public/
-│   ├── src/                 # React / Vite candidate evaluation interface
-│   ├── eslint.config.js
-│   ├── index.html           # Dashboard entry point
-│   ├── package.json         # Frontend dependency manifest
-│   ├── package-lock.json
-│   └── vite.config.js
-├── screenshots/
-│   └── dashboard.png        # UI screenshot referenced in README
-├── src/
-│   ├── app.py                # FastAPI REST endpoints & upload handlers
-│   ├── extractor.py          # spaCy skill and entity extraction logic
-│   ├── llm_analyzer.py       # Groq concurrent batch inference orchestrator
-│   ├── matcher.py            # SBERT vector similarity & scoring engine
-│   ├── parser.py             # Multi-format document text extractor (PDF, DOCX)
-│   └── preprocessor.py       # Text cleaning & normalization utilities
-├── temp_uploads/             # Transient storage for uploaded resumes
-├── venv/                     # Python virtual environment (not tracked)
-├── .env                      # Environment variables (not tracked)
-├── .gitignore                # Git tracking ignore rules
-├── matches.db                # SQLite database of scored candidate matches
-├── README.md                 # System documentation
-└── requirements.txt          # Backend Python dependency manifest
-```
+├── backend/
+│ ├── main.py # FastAPI REST endpoints & upload handlers
+│ ├── parser.py # Multi-format document text extractor (PDF, DOCX)
+│ ├── extractor.py # spaCy skill and entity extraction logic
+│ ├── ranker.py # SBERT vector similarity & scoring mathematical engine
+│ └── llm_evaluator.py # Groq concurrent batch inference orchestrator
+├── frontend/
+│ ├── src/ # React / Vite candidate evaluation interface
+│ ├── index.html # Dashboard entry point
+│ └── package.json # Frontend dependency manifest
+├── samples/
+│ ├── resumes/ # Benchmark candidate resume samples
+│ └── job_descriptions/ # Sample technical role descriptions
+├── .env.example # Environment template for API keys
+├── .gitignore # Git tracking ignore rules
+├── README.md # System documentation
+└── requirements.txt # Backend Python dependency manifest
 
 ---
 
